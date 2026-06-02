@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+
+# Electron packaging output
+dist/
+out/
+release/
+
+# Generated result files
+resultado-instagram/
+resultados/
+*.csv
+auditoria.json
+
+# Instagram exports and local data
+*.zip
+uploads/
+tmp/
+temp/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Logs and tooling
+*.log
+npm-debug.log*
+pnpm-debug.log*
+coverage/
+
+# Editors and operating systems
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

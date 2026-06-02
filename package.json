@@ -1,0 +1,67 @@
+{
+  "name": "instagram-export-checker",
+  "version": "2.1.1",
+  "description": "Aplicación de escritorio para analizar seguidores y seguidos desde un ZIP de Instagram.",
+  "productName": "Instagram Export Checker",
+  "private": true,
+  "type": "module",
+  "main": "electron/main.mjs",
+  "author": "Fernando Lozoya",
+  "license": "ISC",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron .",
+    "cli": "node instagram-export-checker.mjs",
+    "pack:win": "electron-builder --win --x64 --dir",
+    "dist:win": "electron-builder --win portable --x64",
+    "dist:win:installer": "electron-builder --win nsis --x64",
+    "dist:win:all": "electron-builder --win portable nsis --x64"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "adm-zip": "^0.5.17"
+  },
+  "devDependencies": {
+    "electron": "^42.3.2",
+    "electron-builder": "^26.8.1"
+  },
+  "build": {
+    "appId": "com.fernandolozoya.instagramexportchecker",
+    "productName": "Instagram Export Checker",
+    "asar": true,
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "build/**/*",
+      "electron/**/*",
+      "public/**/*",
+      "src/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "Instagram-Export-Checker-${version}-${arch}.${ext}",
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "artifactName": "Instagram-Export-Checker-Setup-${version}-${arch}.${ext}",
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "installerHeaderIcon": "build/icon.ico"
+    }
+  },
+  "packageManager": "pnpm@10.33.0"
+}

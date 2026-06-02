@@ -1,0 +1,36 @@
+name: Build Windows executable
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    name: Build portable EXE and installer
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Build Windows executables
+        run: pnpm run dist:win:all
+
+      - name: Upload Windows executables
+        uses: actions/upload-artifact@v4
+        with:
+          name: instagram-export-checker-windows
+          path: dist/*.exe
+          if-no-files-found: error

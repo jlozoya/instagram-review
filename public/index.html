@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Export Checker</title>
+    <meta
+      name="description"
+      content="Analiza localmente el ZIP de Instagram para comparar seguidores y seguidos."
+    >
+    <link rel="icon" type="image/png" href="/assets/icon.png">
+    <link rel="stylesheet" href="/styles.css">
+    <script type="module" src="/app.js"></script>
+  </head>
+  <body>
+    <header class="header">
+      <div class="brand">
+        <img class="brand-mark" src="/assets/icon.png" alt="">
+        <div>
+          <p class="brand-title">Instagram Export Checker</p>
+          <p class="brand-subtitle">Análisis del archivo exportado</p>
+        </div>
+      </div>
+      <span class="privacy-pill">Procesamiento local</span>
+    </header>
+
+    <main class="page">
+      <section class="hero" aria-labelledby="page-title">
+        <div>
+          <p class="eyebrow">Seguidores y seguidos</p>
+          <h1 id="page-title">Verifica quién no te sigue de vuelta</h1>
+          <p class="hero-description">
+            Sube el ZIP de Instagram en formato JSON. La aplicación identifica
+            las listas correctas, compara usuarios y genera archivos CSV descargables.
+          </p>
+        </div>
+        <aside class="how-to">
+          <p class="how-to-title">El ZIP debe incluir</p>
+          <code>followers_*.json</code>
+          <code>following.json</code>
+        </aside>
+      </section>
+
+      <section class="panel upload-panel" aria-labelledby="upload-title">
+        <div class="panel-header">
+          <div>
+            <p class="step">Paso 1</p>
+            <h2 id="upload-title">Carga tu exportación</h2>
+          </div>
+          <button id="resetButton" class="text-button" type="button" hidden>Limpiar</button>
+        </div>
+
+        <form id="analysisForm">
+          <label id="dropzone" class="dropzone" for="zipInput">
+            <input id="zipInput" name="instagramZip" type="file" accept=".zip,application/zip">
+            <span class="upload-icon" aria-hidden="true">↑</span>
+            <strong id="dropTitle">Arrastra tu ZIP o selecciónalo</strong>
+            <span id="dropDescription">Solo se admite un archivo .zip</span>
+          </label>
+
+          <label class="field" for="usernames">
+            <span>Usuarios específicos a verificar <small>(opcional)</small></span>
+            <textarea
+              id="usernames"
+              name="usernames"
+              rows="2"
+              placeholder="@usuario1, @usuario2"
+            ></textarea>
+          </label>
+
+          <div id="errorMessage" class="message error" role="alert" hidden></div>
+          <div id="statusMessage" class="message status" role="status" hidden></div>
+
+          <button id="analyzeButton" class="primary-button" type="submit" disabled>
+            Analizar archivo
+          </button>
+        </form>
+      </section>
+
+      <section id="results" class="results" aria-live="polite" hidden>
+        <div class="section-title-row">
+          <div>
+            <p class="step">Paso 2</p>
+            <h2>Resultados</h2>
+          </div>
+          <p id="resultFile" class="file-tag"></p>
+        </div>
+
+        <div id="summaryCards" class="summary-grid"></div>
+
+        <section class="panel download-panel" aria-labelledby="downloads-title">
+          <div class="panel-header compact">
+            <div>
+              <h3 id="downloads-title">Descargas</h3>
+              <p class="muted">CSV para Excel y auditoría completa en JSON.</p>
+            </div>
+          </div>
+          <div id="downloadButtons" class="download-grid"></div>
+        </section>
+
+        <section id="verifiedPanel" class="panel" aria-labelledby="verified-title" hidden>
+          <div class="panel-header compact">
+            <h3 id="verified-title">Usuarios verificados</h3>
+          </div>
+          <div id="verifiedUsers" class="verified-grid"></div>
+        </section>
+
+        <section class="panel table-panel" aria-labelledby="comparison-title">
+          <div class="panel-header table-heading">
+            <div>
+              <h3 id="comparison-title">Comparación</h3>
+              <p id="tableDescription" class="muted"></p>
+            </div>
+            <label class="search-field" for="searchInput">
+              <span class="sr-only">Buscar username</span>
+              <input id="searchInput" type="search" placeholder="Buscar usuario">
+            </label>
+          </div>
+
+          <nav id="tabs" class="tabs" aria-label="Tipos de resultados">
+            <button class="tab active" type="button" data-list="notFollowingBack">No te siguen</button>
+            <button class="tab" type="button" data-list="youDontFollowBack">Tú no sigues</button>
+            <button class="tab" type="button" data-list="mutual">Mutuo</button>
+          </nav>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Usuario</th>
+                  <th scope="col">Perfil</th>
+                </tr>
+              </thead>
+              <tbody id="userRows"></tbody>
+            </table>
+            <p id="emptyState" class="empty-state" hidden>No se encontraron usuarios.</p>
+          </div>
+
+          <div id="pagination" class="pagination" hidden>
+            <button id="previousPage" class="secondary-button" type="button">Anterior</button>
+            <span id="pageText"></span>
+            <button id="nextPage" class="secondary-button" type="button">Siguiente</button>
+          </div>
+        </section>
+
+        <section id="auditPanel" class="panel audit-panel" aria-labelledby="audit-title">
+          <div class="panel-header compact">
+            <div>
+              <h3 id="audit-title">Archivos detectados</h3>
+              <p class="muted">Confirma que el ZIP contiene los datos esperados.</p>
+            </div>
+          </div>
+          <div class="audit-columns">
+            <div>
+              <h4>Seguidores</h4>
+              <ul id="followersFiles"></ul>
+            </div>
+            <div>
+              <h4>Seguidos</h4>
+              <ul id="followingFiles"></ul>
+            </div>
+          </div>
+          <div id="warningsBox" class="warnings" hidden>
+            <h4>Advertencias</h4>
+            <ul id="warningsList"></ul>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <footer class="footer">
+      El análisis se basa exclusivamente en la información incluida en tu ZIP.
+    </footer>
+  </body>
+</html>
