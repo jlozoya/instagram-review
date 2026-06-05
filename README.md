@@ -2,19 +2,6 @@
 
 Aplicación de escritorio para analizar el ZIP exportado por Instagram y revisar quién no te sigue de vuelta.
 
-## Icono incluido
-
-El proyecto ya contiene el icono de la aplicación en todos los formatos necesarios:
-
-```text
-build/icon.svg        Fuente editable del icono
-build/icon.png        Icono de la ventana de Electron
-build/icon.ico        Icono del ejecutable, instalador y barra de tareas de Windows
-public/assets/icon.png Icono utilizado dentro de la interfaz
-```
-
-El icono está configurado en `package.json` para el build de Windows y en `electron/main.mjs` para el modo de desarrollo.
-
 ## Ejecutables de Windows
 
 La aplicación está configurada para generar:
