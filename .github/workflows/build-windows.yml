@@ -23,7 +23,7 @@ jobs:
           node-version: "22"
 
       - name: Install dependencies
-        run: pnpm install --no-frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Build Windows executables
         run: pnpm run dist:win:all

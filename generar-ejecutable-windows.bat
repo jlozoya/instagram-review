@@ -22,7 +22,7 @@ if errorlevel 1 (
 )
 
 echo pnpm no esta instalado; compilando con npm...
-call npm install
+call npm install --ignore-scripts
 if errorlevel 1 goto :error
 call npm run dist:win:all
 if errorlevel 1 goto :error
